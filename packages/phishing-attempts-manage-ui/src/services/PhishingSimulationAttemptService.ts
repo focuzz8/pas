@@ -21,7 +21,7 @@ class PhishingSimulationAttemptService {
 
 	sendPhishingEmail = async (email: string, subject: string, body: string) => {
 		try {
-			const response = await this.axiosInstance.post("/phishing/send", { email, subject, body });
+			const response = await this.axiosInstance.post("/phishing/create", { email, subject, body });
 			return response.data;
 		} catch (error) {
 			console.error(error);
