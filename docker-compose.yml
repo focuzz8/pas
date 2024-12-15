@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  manage-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.manage.service
+    environment:
+      - PORT_MANAGE=3000
+      - BCRYPT_SALT_ROUNDS=10
+      - JWT_SECRET=your_jwt_secret_key_here
+      - MONGO_URI=mongodb://mongodb:27017/nest
+      - SIMULATION_SERVICE_URL=http://simulation-service:3001
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongodb
+
+  simulation-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.simulation.service
+    environment:
+      - PORT_SIMULATION=3001
+      - BASE_URL=http://localhost/api/simulation
+      - BCRYPT_SALT_ROUNDS=10
+      - JWT_SECRET=your_jwt_secret_key_here
+      - MONGO_URI=mongodb://mongodb:27017/nest
+      - SMTP_HOST=smtp
+      - SMTP_PORT=1025
+      - SMTP_USER=user
+      - SMTP_PASSWORD=password
+      - SENDER_EMAIL=user@example.com
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongodb
+      - smtp
+
+  ui:
+    build:
+      context: .
+      dockerfile: Dockerfile.manage.ui
+    ports:
+      - "80:80"
+    depends_on:
+      - manage-service
+      - simulation-service
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  smtp:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
+
+volumes:
+  mongodb_data:

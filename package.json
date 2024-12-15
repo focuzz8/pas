@@ -1,0 +1,12 @@
+{
+	"name": "@cytest",
+	"private": true,
+	"version": "1.0.0",
+	"description": "",
+	"license": "MIT",
+	"workspaces": ["packages/*"],
+	"packageManager": "pnpm@9.15.0",
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.3"
+	}
+}
